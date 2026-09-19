@@ -135,6 +135,11 @@ export default defineConfig({
 					singleton: true,
 					eager: true,
 					requiredVersion: deps.axios
+				},
+				leaflet: {
+					singleton: true,
+					eager: true,
+					requiredVersion: deps.leaflet
 				}
 			}
 		}),

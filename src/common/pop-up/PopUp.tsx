@@ -133,17 +133,18 @@ const PopUp: React.FC<PopUpProps> = ({
 	if (!isOpen) return null;
 
 	return (
-		<div
-			className="fixed inset-0 z-50 flex items-center justify-center"
-			style={{ pointerEvents: "none" }}
-		>
+		<div className="fixed inset-0 z-[9999] flex items-center justify-center">
+			<div
+				className="fixed inset-0 bg-black/70 backdrop-blur-sm pointer-events-auto"
+				onClick={onClose}
+			/>
 			<div
 				ref={popupRef}
 				aria-modal="true"
 				aria-labelledby="popup-title"
 				tabIndex={-1}
 				className={cn(
-					"relative flex flex-col rounded-lg bg-background-100-3 shadow-2xl",
+					"relative z-10 flex flex-col rounded-lg bg-background-100-3 shadow-2xl",
 					isDragging && "cursor-grabbing",
 					className
 				)}

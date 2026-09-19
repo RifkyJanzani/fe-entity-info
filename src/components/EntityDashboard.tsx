@@ -39,6 +39,7 @@ const EntityDashboard: React.FC = () => {
 		openAddModal,
 		openEditModal,
 		closeModal,
+		handleMapClick,
 		handleSubmit,
 		handleDelete,
 		handleReset,
@@ -132,6 +133,7 @@ const EntityDashboard: React.FC = () => {
 							entities={entities}
 							selectedId={selectedId}
 							onSelect={setSelectedId}
+							onMapClick={handleMapClick}
 						/>
 						<EntityList
 							entities={entities}

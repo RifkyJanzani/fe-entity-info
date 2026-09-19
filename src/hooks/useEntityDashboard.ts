@@ -96,7 +96,14 @@ export const useEntityDashboard = () => {
 					updatedAt: formatTimeAgo(ent.updatedAt)
 				}));
 				setEntities(formattedEntities);
-				if (formattedEntities.length > 0) {
+
+				if (filterKind || filterStatus || searchQuery.trim()) {
+					// When filter or search is active, don't force select a single entity so the map fits all filtered items
+					setSelectedId((current) => {
+						const exists = formattedEntities.some((e) => e.id === current);
+						return exists ? current : "";
+					});
+				} else if (formattedEntities.length > 0) {
 					setSelectedId((current) => {
 						const exists = formattedEntities.some((e) => e.id === current);
 						return exists ? current : formattedEntities[0].id;
@@ -136,42 +143,97 @@ export const useEntityDashboard = () => {
 	 * @param {Exclude<ModalMode, null>} nextMode - Modal mode.
 	 * @param {GeoEntity} [seed] - Optional seed entity.
 	 */
-	const openModal = (nextMode: Exclude<ModalMode, null>, seed?: GeoEntity) => {
-		setDraft(blankFormState(seed));
-		setErrors({});
-		setModalMode(nextMode);
-	};
+	const openModal = useCallback(
+		(nextMode: Exclude<ModalMode, null>, seed?: GeoEntity) => {
+			setDraft(blankFormState(seed));
+			setErrors({});
+			setModalMode(nextMode);
+		},
+		[]
+	);
 
 	/**
 	 * Opens the add entity modal.
 	 */
-	const openAddModal = () => {
+	const openAddModal = useCallback(() => {
 		openModal("add");
-	};
+	}, [openModal]);
 
 	/**
 	 * Opens the edit entity modal.
 	 *
 	 * @param {GeoEntity} entity - Entity to edit.
 	 */
-	const openEditModal = (entity: GeoEntity) => {
-		openModal("edit", entity);
-	};
+	const openEditModal = useCallback(
+		(entity: GeoEntity) => {
+			openModal("edit", entity);
+		},
+		[openModal]
+	);
 
 	/**
 	 * Closes the modal.
 	 */
-	const closeModal = () => {
+	const closeModal = useCallback(() => {
 		setModalMode(null);
 		setErrors({});
-	};
+	}, []);
+
+	/**
+	 * Handles clicking on the map to pick coordinates for entity creation.
+	 *
+	 * @param {number} latitude - Picked latitude coordinate.
+	 * @param {number} longitude - Picked longitude coordinate.
+	 */
+	const handleMapClick = useCallback((latitude: number, longitude: number) => {
+		const formattedLat = latitude.toFixed(4);
+		const formattedLng = longitude.toFixed(4);
+
+		setDraft((current) => ({
+			...current,
+			latitude: formattedLat,
+			longitude: formattedLng
+		}));
+
+		setModalMode((currentMode) => {
+			if (currentMode === null) {
+				setErrors({});
+				return "add";
+			}
+			return currentMode;
+		});
+	}, []);
+
+	/**
+	 * Changes search query and deselects single entity to fit all results.
+	 */
+	const handleSearchChange = useCallback((query: string) => {
+		setSearchQuery(query);
+		setSelectedId("");
+	}, []);
+
+	/**
+	 * Changes kind filter and deselects single entity to fit all results.
+	 */
+	const handleKindChange = useCallback((kind: EntityKind | "") => {
+		setFilterKind(kind);
+		setSelectedId("");
+	}, []);
+
+	/**
+	 * Changes status filter and deselects single entity to fit all results.
+	 */
+	const handleStatusChange = useCallback((status: EntityStatus | "") => {
+		setFilterStatus(status);
+		setSelectedId("");
+	}, []);
 
 	/**
 	 * Validates the draft form on client side.
 	 *
 	 * @returns {boolean} True if draft is valid.
 	 */
-	const validateDraft = () => {
+	const validateDraft = useCallback(() => {
 		const nextErrors: FormErrors = {};
 		const latitude = Number(draft.latitude);
 		const longitude = Number(draft.longitude);
@@ -190,12 +252,12 @@ export const useEntityDashboard = () => {
 
 		setErrors(nextErrors);
 		return Object.keys(nextErrors).length === 0;
-	};
+	}, [draft]);
 
 	/**
 	 * Handles modal form submission (create or update).
 	 */
-	const handleSubmit = async () => {
+	const handleSubmit = useCallback(async () => {
 		if (!validateDraft()) {
 			return;
 		}
@@ -275,55 +337,59 @@ export const useEntityDashboard = () => {
 		} finally {
 			setIsSaving(false);
 		}
-	};
+	}, [draft, modalMode, validateDraft, closeModal]);
 
 	/**
 	 * Handles entity deletion.
 	 *
 	 * @param {string} entityId - ID of the entity to delete.
 	 */
-	const handleDelete = async (entityId: string) => {
-		setIsSaving(true);
-		setApiError(null);
-		try {
-			await entityService.deleteEntity(entityId);
-			setEntities((current) => {
-				const next = current.filter((entity) => entity.id !== entityId);
-				if (selectedId === entityId) {
-					setSelectedId(next[0]?.id ?? "");
+	const handleDelete = useCallback(
+		async (entityId: string) => {
+			setIsSaving(true);
+			setApiError(null);
+			try {
+				await entityService.deleteEntity(entityId);
+				setEntities((current) => {
+					const next = current.filter((entity) => entity.id !== entityId);
+					if (selectedId === entityId) {
+						setSelectedId(next[0]?.id ?? "");
+					}
+					return next;
+				});
+				void entityService
+					.getMetrics()
+					.then(setBackendMetrics)
+					.catch(() => {});
+			} catch (err) {
+				console.error("Failed to delete entity:", err);
+				if (axios.isAxiosError<ApiErrorResponse>(err) && err.response) {
+					const msg =
+						err.response.data?.error?.message ||
+						`Failed to delete entity (${err.response.status})`;
+					setApiError(msg);
+				} else if (err instanceof Error) {
+					setApiError(err.message);
+				} else {
+					setApiError("Failed to delete entity.");
 				}
-				return next;
-			});
-			void entityService
-				.getMetrics()
-				.then(setBackendMetrics)
-				.catch(() => {});
-		} catch (err) {
-			console.error("Failed to delete entity:", err);
-			if (axios.isAxiosError<ApiErrorResponse>(err) && err.response) {
-				const msg =
-					err.response.data?.error?.message ||
-					`Failed to delete entity (${err.response.status})`;
-				setApiError(msg);
-			} else if (err instanceof Error) {
-				setApiError(err.message);
-			} else {
-				setApiError("Failed to delete entity.");
+			} finally {
+				setIsSaving(false);
 			}
-		} finally {
-			setIsSaving(false);
-		}
-	};
+		},
+		[selectedId]
+	);
 
 	/**
 	 * Resets all filters and reloads data from backend.
 	 */
-	const handleReset = () => {
+	const handleReset = useCallback(() => {
 		setSearchQuery("");
 		setFilterKind("");
 		setFilterStatus("");
+		setSelectedId("");
 		void loadEntities();
-	};
+	}, [loadEntities]);
 
 	return {
 		entities,
@@ -341,12 +407,13 @@ export const useEntityDashboard = () => {
 		filterStatus,
 		setDraft,
 		setSelectedId,
-		setSearchQuery,
-		setFilterKind,
-		setFilterStatus,
+		setSearchQuery: handleSearchChange,
+		setFilterKind: handleKindChange,
+		setFilterStatus: handleStatusChange,
 		openAddModal,
 		openEditModal,
 		closeModal,
+		handleMapClick,
 		handleSubmit,
 		handleDelete,
 		handleReset,
