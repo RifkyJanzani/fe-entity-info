@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    image: "${SERVICE_NAME_DOCKER:-fe-entity-info}:${BUILD_TAG:-latest}"
+    container_name: "${SERVICE_NAME_DOCKER:-fe-entity-info}"
+    ports:
+      - "${PORT:-8123}:80"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
+    restart: unless-stopped
