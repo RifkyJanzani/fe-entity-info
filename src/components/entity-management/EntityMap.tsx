@@ -265,11 +265,9 @@ const EntityMap: React.FC<EntityMapProps> = ({
 			{/* Header Bar */}
 			<div className="flex items-center justify-between border-b border-white/10 px-4 py-3.5 sm:px-5">
 				<div>
-					<p className="text-sm font-semibold text-white">
-						Geospatial Entity Map
-					</p>
+					<p className="text-sm font-semibold text-white">Entity Map</p>
 					<p className="text-xs text-white/50">
-						Interactive Leaflet view with live telemetry markers.
+						Interactive map view with live telemetry markers.
 					</p>
 				</div>
 				<div className="flex items-center gap-2">

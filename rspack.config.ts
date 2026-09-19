@@ -51,10 +51,7 @@ export default defineConfig({
 		extensions: ["...", ".ts", ".tsx", ".jsx"]
 	},
 	devServer: {
-		port: parseInt(getEnv("PORT", "8713")),
-		static: {
-			directory: path.join(__dirname, "build")
-		},
+		port: parseInt(getEnv("PORT", "8123")),
 		historyApiFallback: true,
 		client: {
 			overlay: false

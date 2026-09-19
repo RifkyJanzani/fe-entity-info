@@ -3,13 +3,18 @@ FROM node:20.9.0-alpine AS build
 
 WORKDIR /app
 
-# Enable pnpm via Corepack
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Install pnpm (pin to major version 9)
+RUN npm install -g pnpm@9
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
+
+# Build Arguments & Environment
+ARG VITE_API_BASE_URL=http://localhost:8080/api/v1
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 RUN pnpm build
 
 # Runtime Process
