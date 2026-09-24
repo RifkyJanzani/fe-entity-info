@@ -5,7 +5,6 @@
 [![Rspack](https://img.shields.io/badge/Bundler-Rspack-D85480?style=flat-square&logo=webpack&logoColor=white)](https://rspack.rs/)
 [![Leaflet](https://img.shields.io/badge/Map-Leaflet-199900?style=flat-square&logo=leaflet&logoColor=white)](https://leafletjs.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Tests](https://img.shields.io/badge/Tests-39%20Passed-4F9669?style=flat-square&logo=jest&logoColor=white)](https://jestjs.io/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
 
 Aplikasi frontend modern untuk visualisasi lokasi dan manajemen data entitas secara real-time. Terhubung langsung dengan backend REST API Go Gin (`be-entity-info`) dan database PostgreSQL.
