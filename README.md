@@ -81,7 +81,7 @@ Aplikasi frontend modern untuk visualisasi lokasi dan manajemen data entitas sec
 | **Rspack**                       | Bundler berbasis Rust berkecepatan tinggi dengan waktu kompilasi di bawah 1 detik, mendukung _Hot Module Replacement (HMR)_ instan dan konfigurasi yang efisien.                                            |
 | **Tailwind CSS**                 | Menyediakan styling berbasis utility-first yang cepat dan konsisten untuk tema gelap (_dark theme_) yang menyatu dengan tampilan peta.                                                                      |
 | **Axios**                        | HTTP client andal dengan interceptor dan error handling yang terstruktur untuk menangkap validasi error HTTP 400 dari backend secara presisi.                                                               |
-| **Jest & React Testing Library** | Framework unit test untuk menguji state management kustom (`useEntityDashboard`) dan integrasi API service (39 tests lulus 100%).                                                           |
+| **Jest & React Testing Library** | Framework unit test untuk menguji state management.                                                           |
 | **Nginx (Alpine)**               | Web server produksi dalam container Docker yang sangat ringan (< 30 MB), mendukung _SPA routing fallback_, dan kompresi `gzip`.                                                                             |
 
 ---
