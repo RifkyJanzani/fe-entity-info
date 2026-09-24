@@ -76,12 +76,12 @@ Aplikasi frontend modern untuk visualisasi lokasi dan manajemen data entitas sec
 
 | Library / Tool                   | Alasan Pemilihan                                                                                                                                                                                            |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Leaflet & OpenStreetMap**      | Solusi peta 100% _open-source_, gratis, dan **bebas API key/watermark**. Sangat fleksibel untuk _custom HTML marker_, kontrol kamera (_flyTo/fitBounds_), dan interaksi klik untuk memilih titik koordinat. |
-| **React 18 & TypeScript**        | Standar industri untuk pengembangan antarmuka modular, performa render optimal, dan _type-safety_ ketat yang mencegah kesalahan tipe data pada koordinat serta atribut entitas.                             |
+| **Leaflet & OpenStreetMap**      | Map _open-source_, gratis, dan **bebas API key/watermark**. Sangat fleksibel untuk _custom HTML marker_, kontrol kamera (_flyTo/fitBounds_), dan interaksi klik untuk memilih titik koordinat. |
+| **React 18 & TypeScript**        | Standar untuk pengembangan antarmuka modular, performa render optimal, dan _type-safety_ ketat yang mencegah kesalahan tipe data pada koordinat serta atribut entitas.                             |
 | **Rspack**                       | Bundler berbasis Rust berkecepatan tinggi dengan waktu kompilasi di bawah 1 detik, mendukung _Hot Module Replacement (HMR)_ instan dan konfigurasi yang efisien.                                            |
 | **Tailwind CSS**                 | Menyediakan styling berbasis utility-first yang cepat dan konsisten untuk tema gelap (_dark theme_) yang menyatu dengan tampilan peta.                                                                      |
 | **Axios**                        | HTTP client andal dengan interceptor dan error handling yang terstruktur untuk menangkap validasi error HTTP 400 dari backend secara presisi.                                                               |
-| **Jest & React Testing Library** | Framework pengujian unit yang andal untuk menguji state management kustom (`useEntityDashboard`) dan integrasi API service (39 tests lulus 100%).                                                           |
+| **Jest & React Testing Library** | Framework unit test untuk menguji state management kustom (`useEntityDashboard`) dan integrasi API service (39 tests lulus 100%).                                                           |
 | **Nginx (Alpine)**               | Web server produksi dalam container Docker yang sangat ringan (< 30 MB), mendukung _SPA routing fallback_, dan kompresi `gzip`.                                                                             |
 
 ---
